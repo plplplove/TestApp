@@ -11,13 +11,19 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class GameMenuActivity : AppCompatActivity() {
 
+    private lateinit var bestScoreText: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_menu)
+
+        bestScoreText = findViewById(R.id.bestScoreText)
+        updateBestScoreDisplay()
 
         setupButton(findViewById(R.id.btnStartGame)) {
             val intent = Intent(this, GameActivity::class.java)
@@ -30,6 +36,17 @@ class GameMenuActivity : AppCompatActivity() {
         setupButton(findViewById(R.id.btnExitGame)) {
             finish()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateBestScoreDisplay()
+    }
+
+    private fun updateBestScoreDisplay() {
+        val sharedPreferences = getSharedPreferences("game_prefs", MODE_PRIVATE)
+        val bestScore = sharedPreferences.getInt("best_score", 0)
+        bestScoreText.text = getString(R.string.best_score_format, bestScore)
     }
 
     @SuppressLint("ClickableViewAccessibility")

@@ -1,8 +1,14 @@
 package com.example.testapp
 
+import android.app.Dialog
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -23,24 +29,29 @@ class GameActivity : AppCompatActivity() {
 
     private var lives = 3
     private var score = 0
+    private var currentIndex = 0
+    private var isFirstPairInRound = true
 
-    private val emojis = listOf("😀", "😢", "😐", "😎", "😡", "😍", "🤔",
+    private var gameTimer: CountDownTimer? = null
+    private lateinit var sequence: List<String>
+
+    private val emojis = listOf(
+        "😀", "😢", "😐", "😎", "😡", "😍", "🤔",
         "😴", "😱", "😭", "😇", "🤯", "😜", "🤡",
         "🤢", "😷", "🥳", "😈", "👻", "👽", "🤖",
         "🐶", "🐱", "🐵", "🦄", "🐸", "🐼", "🦊",
-        "🐰", "🐯", "🐮", "🐷")
-
-    private lateinit var sequence: List<String>
-    private var currentIndex = 0
-
-    private var gameTimer: CountDownTimer? = null
-
-    private var isFirstPairInRound = true
+        "🐰", "🐯", "🐮", "🐷"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
+        initViews()
+        startGame()
+    }
+
+    private fun initViews() {
         livesText = findViewById(R.id.livesText)
         scoreText = findViewById(R.id.scoreText)
         timerText = findViewById(R.id.timerText)
@@ -50,18 +61,23 @@ class GameActivity : AppCompatActivity() {
 
         cardLeft = findViewById(R.id.cardLeft)
         cardRight = findViewById(R.id.cardRight)
+    }
 
+    private fun startGame() {
+        lives = 3
+        score = 0
+        updateLives()
+        updateScore()
         startGameTimer()
         startNewRound()
     }
 
     private fun startGameTimer() {
         gameTimer?.cancel()
-
         gameTimer = object : CountDownTimer(30000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsLeft = millisUntilFinished / 1000
-                timerText.text = "$secondsLeft"
+                timerText.text = secondsLeft.toString()
             }
 
             override fun onFinish() {
@@ -79,12 +95,12 @@ class GameActivity : AppCompatActivity() {
         currentIndex = 0
         isFirstPairInRound = true
 
-        for (emoji in sequence) {
+        sequence.forEach { emoji ->
             val emojiView = TextView(this).apply {
                 text = emoji
                 textSize = 40f
                 setPadding(16, 0, 16, 0)
-                setTextColor(resources.getColor(R.color.dark_brown))
+                setTextColor(resources.getColor(R.color.dark_brown, null))
                 typeface = resources.getFont(R.font.joystixmonospace)
             }
             emojiSequenceLayout.addView(emojiView)
@@ -122,12 +138,8 @@ class GameActivity : AppCompatActivity() {
             isFirstPairInRound = false
         }
 
-        cardLeft.setOnClickListener {
-            handleCardClick(isCorrectOnLeft, cardLeft)
-        }
-        cardRight.setOnClickListener {
-            handleCardClick(!isCorrectOnLeft, cardRight)
-        }
+        cardLeft.setOnClickListener { handleCardClick(isCorrectOnLeft, cardLeft) }
+        cardRight.setOnClickListener { handleCardClick(!isCorrectOnLeft, cardRight) }
     }
 
     private fun handleCardClick(correct: Boolean, clickedButton: Button) {
@@ -148,6 +160,50 @@ class GameActivity : AppCompatActivity() {
 
         currentIndex++
         showNextCardPair()
+    }
+
+    private fun endGame() {
+        gameTimer?.cancel()
+
+        val sharedPreferences = getSharedPreferences("game_prefs", MODE_PRIVATE)
+        val bestScore = sharedPreferences.getInt("best_score", 0)
+        
+        if (score > bestScore) {
+            sharedPreferences.edit().putInt("best_score", score).apply()
+        }
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_game_over)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val displayMetrics = resources.displayMetrics
+        val width = (displayMetrics.widthPixels * 0.9).toInt()
+        dialog.window?.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
+
+        dialog.findViewById<TextView>(R.id.scoreText).text = "Your Score: $score"
+
+        dialog.findViewById<Button>(R.id.btnTryAgain).setOnClickListener {
+            dialog.dismiss()
+            startGame()
+        }
+
+        dialog.findViewById<Button>(R.id.btnMainMenu).setOnClickListener {
+            dialog.dismiss()
+            startActivity(Intent(this, GameMenuActivity::class.java))
+            finish()
+        }
+
+        dialog.show()
+    }
+
+    private fun updateLives() {
+        livesText.text = "Lives: $lives"
+    }
+
+    private fun updateScore() {
+        scoreText.text = "Score: $score"
     }
 
     private fun animateEmojiEntry(view: View) {
@@ -210,20 +266,6 @@ class GameActivity : AppCompatActivity() {
                     .start()
             }
             .start()
-    }
-
-    private fun updateLives() {
-        livesText.text = "Lives: $lives"
-    }
-
-    private fun updateScore() {
-        scoreText.text = "Score: $score"
-    }
-
-    private fun endGame() {
-        gameTimer?.cancel()
-        // TODO: Перехід на ResultActivity
-        finish()
     }
 
     override fun onDestroy() {
