@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">EmojiGate</string>
+    <string name="app_name">TestApp</string>
     <string name="game_title">EMOJI GATE</string>
     <string name="best_score">Your best score: 0</string>
     <string name="best_score_format">Your best score: %d</string>

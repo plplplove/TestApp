@@ -16,21 +16,28 @@ class BackgroundView @JvmOverloads constructor(
     private val clouds = mutableListOf<Cloud>()
 
     init {
-        clouds.add(createCloud())
-        clouds.add(createCloud())
+        repeat(3) { index ->
+            clouds.add(createCloud(index == 0))
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        canvas.drawBitmap(backgroundBitmap, null, RectF(0f, 0f, width.toFloat(), height.toFloat()), null)
-
+        drawBackground(canvas)
         updateClouds()
-        for (cloud in clouds) {
-            canvas.drawBitmap(cloud.bitmap, cloud.x, cloud.y, null)
-        }
+        drawClouds(canvas)
 
         postInvalidateOnAnimation()
+    }
+
+    private fun drawBackground(canvas: Canvas) {
+        canvas.drawBitmap(
+            backgroundBitmap,
+            null,
+            RectF(0f, 0f, width.toFloat(), height.toFloat()),
+            null
+        )
     }
 
     private fun updateClouds() {
@@ -44,10 +51,15 @@ class BackgroundView @JvmOverloads constructor(
         }
     }
 
-    private fun createCloud(): Cloud {
-        val random = Random.nextInt(2)
+    private fun drawClouds(canvas: Canvas) {
+        for (cloud in clouds) {
+            val paint = Paint().apply { alpha = (cloud.alpha * 255).toInt() }
+            canvas.drawBitmap(cloud.bitmap, cloud.x, cloud.y, paint)
+        }
+    }
 
-        val sizeMultiplier = if (random == 0) {
+    private fun createCloud(isTransparent: Boolean = false): Cloud {
+        val sizeMultiplier = if (Random.nextBoolean()) {
             0.45f + Random.nextFloat() * 0.1f
         } else {
             0.2f + Random.nextFloat() * 0.1f
@@ -64,7 +76,8 @@ class BackgroundView @JvmOverloads constructor(
             x = Random.nextFloat() * width,
             y = Random.nextFloat() * height * 0.3f,
             speedX = 0.5f + Random.nextFloat(),
-            bitmap = scaledCloud
+            bitmap = scaledCloud,
+            alpha = if (isTransparent) 0.5f else 1f
         )
     }
 
@@ -72,6 +85,7 @@ class BackgroundView @JvmOverloads constructor(
         var x: Float,
         var y: Float,
         var speedX: Float,
-        val bitmap: Bitmap
+        val bitmap: Bitmap,
+        val alpha: Float
     )
 }

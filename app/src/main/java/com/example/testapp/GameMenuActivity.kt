@@ -13,27 +13,31 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.testapp.databinding.ActivityGameMenuBinding
+import com.example.testapp.databinding.DialogGameRulesBinding
 
 class GameMenuActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityGameMenuBinding
     private lateinit var bestScoreText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game_menu)
+        binding = ActivityGameMenuBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        bestScoreText = findViewById(R.id.bestScoreText)
+        bestScoreText = binding.bestScoreText
         updateBestScoreDisplay()
 
-        setupButton(findViewById(R.id.btnStartGame)) {
+        setupButton(binding.btnStartGame) {
             val intent = Intent(this, GameActivity::class.java)
             startActivity(intent)
             finish()
         }
-        setupButton(findViewById(R.id.btnGameRules)) {
+        setupButton(binding.btnGameRules) {
             showGameRulesDialog()
         }
-        setupButton(findViewById(R.id.btnExitGame)) {
+        setupButton(binding.btnExitGame) {
             finish()
         }
     }
@@ -76,15 +80,15 @@ class GameMenuActivity : AppCompatActivity() {
 
     private fun showGameRulesDialog() {
         val dialog = Dialog(this)
+        val bindingDialog = DialogGameRulesBinding.inflate(layoutInflater)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_game_rules)
+        dialog.setContentView(bindingDialog.root)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val width = (resources.displayMetrics.widthPixels * 0.9).toInt()
         dialog.window?.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
 
-        val btnOk = dialog.findViewById<Button>(R.id.btnOk)
-        setupButton(btnOk) {
+        setupButton(bindingDialog.btnOk) {
             dialog.dismiss()
         }
 

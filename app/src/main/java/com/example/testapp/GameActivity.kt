@@ -9,29 +9,19 @@ import android.os.CountDownTimer
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.testapp.databinding.ActivityGameBinding
+import com.example.testapp.databinding.DialogGameOverBinding
 import kotlin.random.Random
 
 class GameActivity : AppCompatActivity() {
 
-    private lateinit var livesText: TextView
-    private lateinit var scoreText: TextView
-    private lateinit var timerText: TextView
-
-    private lateinit var emojiSequenceLayout: LinearLayout
-    private lateinit var emojiCardsLayout: LinearLayout
-
-    private lateinit var cardLeft: Button
-    private lateinit var cardRight: Button
-
+    private lateinit var binding: ActivityGameBinding
     private var lives = 3
     private var score = 0
     private var currentIndex = 0
     private var isFirstPairInRound = true
-
     private var gameTimer: CountDownTimer? = null
     private lateinit var sequence: List<String>
 
@@ -45,22 +35,9 @@ class GameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game)
-
-        initViews()
+        binding = ActivityGameBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         startGame()
-    }
-
-    private fun initViews() {
-        livesText = findViewById(R.id.livesText)
-        scoreText = findViewById(R.id.scoreText)
-        timerText = findViewById(R.id.timerText)
-
-        emojiSequenceLayout = findViewById(R.id.emojiSequence)
-        emojiCardsLayout = findViewById(R.id.emojiCards)
-
-        cardLeft = findViewById(R.id.cardLeft)
-        cardRight = findViewById(R.id.cardRight)
     }
 
     private fun startGame() {
@@ -76,8 +53,7 @@ class GameActivity : AppCompatActivity() {
         gameTimer?.cancel()
         gameTimer = object : CountDownTimer(30000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                val secondsLeft = millisUntilFinished / 1000
-                timerText.text = secondsLeft.toString()
+                binding.timerText.text = (millisUntilFinished / 1000).toString()
             }
 
             override fun onFinish() {
@@ -87,28 +63,22 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun startNewRound() {
-        emojiSequenceLayout.removeAllViews()
-        emojiSequenceLayout.visibility = View.VISIBLE
-        emojiCardsLayout.visibility = View.GONE
+        binding.emojiSequence.removeAllViews()
+        binding.emojiSequence.visibility = View.VISIBLE
+        binding.emojiCards.visibility = View.GONE
 
         sequence = List(3) { emojis.random() }
         currentIndex = 0
         isFirstPairInRound = true
 
         sequence.forEach { emoji ->
-            val emojiView = TextView(this).apply {
-                text = emoji
-                textSize = 40f
-                setPadding(16, 0, 16, 0)
-                setTextColor(resources.getColor(R.color.dark_brown, null))
-                typeface = resources.getFont(R.font.joystixmonospace)
-            }
-            emojiSequenceLayout.addView(emojiView)
+            val emojiView = createEmojiView(emoji)
+            binding.emojiSequence.addView(emojiView)
             animateEmojiEntry(emojiView)
         }
 
-        emojiSequenceLayout.postDelayed({
-            emojiSequenceLayout.visibility = View.GONE
+        binding.emojiSequence.postDelayed({
+            binding.emojiSequence.visibility = View.GONE
             showNextCardPair()
         }, 2000)
     }
@@ -119,18 +89,18 @@ class GameActivity : AppCompatActivity() {
             return
         }
 
-        emojiCardsLayout.visibility = View.VISIBLE
+        binding.emojiCards.visibility = View.VISIBLE
 
         val correctEmoji = sequence[currentIndex]
         val wrongEmoji = emojis.filter { it != correctEmoji }.random()
         val isCorrectOnLeft = Random.nextBoolean()
 
         if (isCorrectOnLeft) {
-            cardLeft.text = correctEmoji
-            cardRight.text = wrongEmoji
+            binding.cardLeft.text = correctEmoji
+            binding.cardRight.text = wrongEmoji
         } else {
-            cardLeft.text = wrongEmoji
-            cardRight.text = correctEmoji
+            binding.cardLeft.text = wrongEmoji
+            binding.cardRight.text = correctEmoji
         }
 
         if (isFirstPairInRound) {
@@ -138,11 +108,11 @@ class GameActivity : AppCompatActivity() {
             isFirstPairInRound = false
         }
 
-        cardLeft.setOnClickListener { handleCardClick(isCorrectOnLeft, cardLeft) }
-        cardRight.setOnClickListener { handleCardClick(!isCorrectOnLeft, cardRight) }
+        binding.cardLeft.setOnClickListener { handleCardClick(isCorrectOnLeft, binding.cardLeft) }
+        binding.cardRight.setOnClickListener { handleCardClick(!isCorrectOnLeft, binding.cardRight) }
     }
 
-    private fun handleCardClick(correct: Boolean, clickedButton: Button) {
+    private fun handleCardClick(correct: Boolean, clickedButton: View) {
         animateCardClick(clickedButton)
 
         if (correct) {
@@ -167,29 +137,28 @@ class GameActivity : AppCompatActivity() {
 
         val sharedPreferences = getSharedPreferences("game_prefs", MODE_PRIVATE)
         val bestScore = sharedPreferences.getInt("best_score", 0)
-        
+
         if (score > bestScore) {
             sharedPreferences.edit().putInt("best_score", score).apply()
         }
 
         val dialog = Dialog(this)
+        val dialogBinding = DialogGameOverBinding.inflate(layoutInflater)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.dialog_game_over)
+        dialog.setContentView(dialogBinding.root)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        val displayMetrics = resources.displayMetrics
-        val width = (displayMetrics.widthPixels * 0.9).toInt()
+        val width = (resources.displayMetrics.widthPixels * 0.9).toInt()
         dialog.window?.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT)
 
-        dialog.findViewById<TextView>(R.id.scoreText).text = "Your Score: $score"
+        dialogBinding.scoreText.text = "Your Score: $score"
 
-        dialog.findViewById<Button>(R.id.btnTryAgain).setOnClickListener {
+        dialogBinding.btnTryAgain.setOnClickListener {
             dialog.dismiss()
             startGame()
         }
 
-        dialog.findViewById<Button>(R.id.btnMainMenu).setOnClickListener {
+        dialogBinding.btnMainMenu.setOnClickListener {
             dialog.dismiss()
             startActivity(Intent(this, GameMenuActivity::class.java))
             finish()
@@ -199,11 +168,21 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun updateLives() {
-        livesText.text = "Lives: $lives"
+        binding.livesText.text = "Lives: $lives"
     }
 
     private fun updateScore() {
-        scoreText.text = "Score: $score"
+        binding.scoreText.text = "Score: $score"
+    }
+
+    private fun createEmojiView(emoji: String): TextView {
+        return TextView(this).apply {
+            text = emoji
+            textSize = 40f
+            setPadding(16, 0, 16, 0)
+            setTextColor(resources.getColor(R.color.dark_brown, null))
+            typeface = resources.getFont(R.font.joystixmonospace)
+        }
     }
 
     private fun animateEmojiEntry(view: View) {
@@ -217,17 +196,17 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun animateCardEntry() {
-        cardLeft.translationX = -500f
-        cardLeft.alpha = 0f
-        cardLeft.animate()
+        binding.cardLeft.translationX = -500f
+        binding.cardLeft.alpha = 0f
+        binding.cardLeft.animate()
             .translationX(0f)
             .alpha(1f)
             .setDuration(400)
             .start()
 
-        cardRight.translationX = 500f
-        cardRight.alpha = 0f
-        cardRight.animate()
+        binding.cardRight.translationX = 500f
+        binding.cardRight.alpha = 0f
+        binding.cardRight.animate()
             .translationX(0f)
             .alpha(1f)
             .setDuration(400)
