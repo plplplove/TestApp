@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -7,4 +7,106 @@
     android:layout_height="match_parent"
     tools:context=".GameActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.example.testapp.BackgroundView
+        android:id="@+id/backgroundView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/topPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="16dp"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/livesText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lives_text"
+                android:textColor="@color/dark_brown"
+                android:textSize="16sp"
+                android:fontFamily="@font/joystixmonospace" />
+
+            <TextView
+                android:id="@+id/scoreText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/score_text"
+                android:layout_marginStart="24dp"
+                android:textColor="@color/dark_brown"
+                android:textSize="18sp"
+                android:fontFamily="@font/joystixmonospace" />
+        </LinearLayout>
+
+        <!-- Нижче окремо Таймер -->
+        <TextView
+            android:id="@+id/timerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/timer_text"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/dark_brown"
+            android:textSize="18sp"
+            android:fontFamily="@font/joystixmonospace" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/gameContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <LinearLayout
+            android:id="@+id/emojiSequence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="visible"
+            android:layout_marginBottom="32dp">
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/emojiCards"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/cardLeft"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/card_background"
+                android:text=""
+                android:textSize="50sp"
+                android:textColor="@android:color/black"
+                android:fontFamily="@font/joystixmonospace" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/cardRight"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/card_background"
+                android:text=""
+                android:textSize="50sp"
+                android:textColor="@android:color/black"
+                android:fontFamily="@font/joystixmonospace" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

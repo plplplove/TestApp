@@ -2,6 +2,7 @@ package com.example.testapp
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -19,7 +20,9 @@ class GameMenuActivity : AppCompatActivity() {
         setContentView(R.layout.activity_game_menu)
 
         setupButton(findViewById(R.id.btnStartGame)) {
-            // TODO: Start the game
+            val intent = Intent(this, GameActivity::class.java)
+            startActivity(intent)
+            finish()
         }
         setupButton(findViewById(R.id.btnGameRules)) {
             showGameRulesDialog()

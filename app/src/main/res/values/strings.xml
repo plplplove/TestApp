@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">EmojiGate</string>
     <string name="game_title">EMOJI GATE</string>
-    <string name="best_score">Your best score: %1$d</string>
+    <string name="best_score">Your best score: 0</string>
     <string name="start_game">Play</string>
     <string name="game_rules">Game Rules</string>
     <string name="exit_game">Exit</string>
@@ -13,4 +13,7 @@
     Each wrong answer costs you one of three lives.
     Try to get the highest score!
     </string>
+    <string name="lives_text">Lives: 3</string>
+    <string name="score_text">Score: 0</string>
+    <string name="timer_text">30</string>
 </resources>
