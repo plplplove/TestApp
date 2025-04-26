@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameMenuActivity">
+
+    <com.example.testapp.BackgroundView
+        android:id="@+id/backgroundView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp">
+    <TextView
+        android:id="@+id/gameTitleStroke"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/game_title"
+        android:textSize="30sp"
+        android:textColor="@color/dark_brown"
+        android:fontFamily="@font/joystixmonospace"
+        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/gameTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/game_title"
+            android:textSize="30sp"
+            android:textColor="@color/yellow"
+            android:fontFamily="@font/joystixmonospace"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/bestScoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/best_score"
+        android:fontFamily="@font/joystixmonospace"
+        android:textColor="@color/dark_brown"
+        android:textSize="15sp"
+        android:layout_marginBottom="40dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnStartGame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start_game"
+        android:background="@drawable/button_background"
+        android:textColor="@color/dark_brown"
+        android:textSize="16sp"
+        android:fontFamily="@font/joystixmonospace"
+        android:textStyle="bold"
+        android:layout_marginBottom="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnGameRules"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/game_rules"
+        android:background="@drawable/button_background"
+        android:textColor="@color/dark_brown"
+        android:textSize="16sp"
+        android:fontFamily="@font/joystixmonospace"
+        android:textStyle="bold"
+        android:layout_marginBottom="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnExitGame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/exit_game"
+        android:background="@drawable/button_background"
+        android:textColor="@color/dark_brown"
+        android:textSize="16sp"
+        android:fontFamily="@font/joystixmonospace"
+        android:textStyle="bold"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"/>
+
+    </LinearLayout>
+
+</FrameLayout>

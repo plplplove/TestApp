@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         val intent = if (result) {
             Intent(this, WebViewActivity::class.java)
         } else {
-            Intent(this, GameActivity::class.java)
+            Intent(this, GameMenuActivity::class.java)
         }
         startActivity(intent)
         finish()

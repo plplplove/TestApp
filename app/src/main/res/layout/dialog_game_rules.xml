@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/button_background"
+    android:padding="15dp">
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/game_rules"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/dark_brown"
+        android:fontFamily="@font/joystixmonospace"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:layout_marginBottom="20dp"
+        android:fadeScrollbars="false">
+        
+        <TextView
+            android:id="@+id/dialogContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/game_rules_text"
+            android:textSize="16sp"
+            android:textColor="@color/dark_brown"
+            android:fontFamily="@font/joystixmonospace"
+            android:lineSpacingExtra="8dp"/>
+    </ScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnOk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:background="@drawable/button_background"
+        android:textColor="@color/dark_brown"
+        android:textSize="16sp"
+        android:fontFamily="@font/joystixmonospace"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp" />
+</LinearLayout>
