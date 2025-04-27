@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getServerResult(): Boolean {
-        val url = URL("https://run.mocky.io/v3/c6af0421-ebe1-47f4-89d6-d1154b407f04")
+        val url = URL("https://") // Change this link to your server
         val connection = url.openConnection() as HttpURLConnection
         connection.connectTimeout = 5000
         connection.readTimeout = 5000
